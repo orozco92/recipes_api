@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { User } from './core/entities';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,7 +15,9 @@ async function bootstrap() {
     .addBearerAuth()
     .addTag('users', 'user module crud opperations')
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    extraModels: [User],
+  });
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000);
