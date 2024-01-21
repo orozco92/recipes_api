@@ -4,6 +4,6 @@
 export class Ingredient {
   id: number;
   name: string;
-  amount: string;
-  unit: string;
+  amount?: string;
+  unit?: string;
 }

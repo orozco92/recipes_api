@@ -10,8 +10,12 @@ import {
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { RecipeService } from './recipe.service';
+import { ApiTags } from '@nestjs/swagger';
+import { ListRecipeDto } from './dto/list-recipe.dto';
+import { ApiListResponse } from '../../core/decorators/api-paginated-response.decorator';
 
 @Controller('recipes')
+@ApiTags('recipes')
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
@@ -21,6 +25,7 @@ export class RecipeController {
   }
 
   @Get()
+  @ApiListResponse(ListRecipeDto)
   findAll() {
     return this.recipeService.findAll();
   }
