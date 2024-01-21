@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  dev-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=recipes_dev_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - './.db:/var/lib/postgres/data'
