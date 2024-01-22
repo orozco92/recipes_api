@@ -6,7 +6,7 @@ import { RecipeModule } from './modules/recipe/recipe.module';
 import { ConfigModule } from '@nestjs/config';
 import { environments } from './environment';
 import config from './config/config';
-import { DatabaseModule } from './modules/database/database.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
