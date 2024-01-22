@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import config from '../../config/config';
+import { Ingredient, Rating, Recipe, Step, User } from '../../core/entities';
 
 @Global()
 @Module({
@@ -18,6 +19,9 @@ import config from '../../config/config';
           username,
           password,
           type: 'postgres',
+          synchronize: true,
+          autoLoadEntities: true,
+          entities: [User, Recipe, Ingredient, Step, Rating],
         };
       },
     }),

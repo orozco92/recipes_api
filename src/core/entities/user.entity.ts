@@ -2,6 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Rating } from './rating.entity';
 import { Recipe } from './recipe.entity';
+import { Roles } from '../enums';
 
 /**
  * User
@@ -17,7 +18,12 @@ export class User {
   @Column({ name: 'email', type: 'varchar', length: 255 })
   email: string;
 
-  @Column({ name: 'role', type: 'varchar', length: 255 })
+  @Column({
+    name: 'role',
+    type: 'varchar',
+    length: 255,
+    default: Roles.Customer,
+  })
   role: string;
 
   @Column({ name: 'password', type: 'varchar', length: 255 })
