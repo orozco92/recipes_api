@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Recipe } from '../../core/entities';
 import { ListResponseDto } from '../../core/models/list-response';
 import { ListRecipeDto } from './dto/list-recipe.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
+import { ListRequest } from '../../core/models/list-request';
 
 @Injectable()
 export class RecipeService {
@@ -16,19 +17,42 @@ export class RecipeService {
     return this.repo.save(recipe);
   }
 
-  findAll(): ListResponseDto<ListRecipeDto> {
-    return null;
+  async findAll(options: ListRequest): Promise<ListResponseDto<ListRecipeDto>> {
+    const query: FindManyOptions<Recipe> = {
+      skip: options.offset,
+      take: options.limit,
+    };
+    query.order = options.sort?.reduce((p, c) => (p[c[0]] = c[1]), {});
+    return {
+      data: await this.repo.find(query),
+      total: await this.repo.count(query),
+      limit: options.limit,
+      offset: options.offset,
+    };
   }
 
-  findOne(id: number): Recipe {
-    return null;
+  findOne(id: number): Promise<Recipe> {
+    return this.repo.findOne({
+      where: { id },
+      relations: {
+        author: true,
+        ingredients: true,
+        steps: true,
+      },
+    });
   }
 
-  update(id: number, updateRecipeDto: UpdateRecipeDto): Recipe {
-    return null;
+  async update(id: number, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
+    const instance = await this.repo.findOneBy({ id });
+    this.repo.merge(instance, updateRecipeDto);
+    return this.repo.save(instance);
   }
 
-  remove(id: number): Recipe {
-    return null;
+  async remove(id: number): Promise<Recipe> {
+    const instance = await this.repo.findOneBy({ id });
+    if (!instance)
+      throw new BadRequestException(`Recipe not found for id=${id}`);
+    await this.repo.delete(id);
+    return instance;
   }
 }

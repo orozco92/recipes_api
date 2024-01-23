@@ -22,6 +22,8 @@ import { Ingredient, Rating, Recipe, Step, User } from '../core/entities';
           synchronize: process.env.NODE_ENV !== 'production',
           autoLoadEntities: true,
           entities: [User, Recipe, Ingredient, Step, Rating],
+          logger: 'simple-console',
+          logging: ['query'],
         };
       },
     }),

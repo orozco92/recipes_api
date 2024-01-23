@@ -30,15 +30,23 @@ export class Recipe {
   @Column({ name: 'calories', type: 'integer', nullable: true })
   calories: number;
 
-  @Column({ name: 'rating', type: 'decimal', precision: 2, scale: 1 })
+  @Column({
+    name: 'rating',
+    type: 'decimal',
+    precision: 2,
+    scale: 1,
+    default: 0,
+  })
   rating: number;
 
   @ManyToOne(() => User, (user) => user.recipes)
   author: User;
 
-  @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe)
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
+    cascade: true,
+  })
   ingredients: Ingredient[];
 
-  @OneToMany(() => Step, (step) => step.recipe)
+  @OneToMany(() => Step, (step) => step.recipe, { cascade: true })
   steps: Step[];
 }
