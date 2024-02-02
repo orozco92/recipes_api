@@ -1,11 +1,18 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Recipe } from './recipe.entity';
+import { Auditable } from './auditable.entity';
 
 /**
  * Step
  **/
 @Entity('steps')
-export class Step {
+export class Step extends Auditable {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -16,5 +23,6 @@ export class Step {
   description: string;
 
   @ManyToOne(() => Recipe, (recipe) => recipe.steps)
+  @JoinColumn({ name: 'recipe_id' })
   recipe: Recipe;
 }

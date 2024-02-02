@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Recipe } from './recipe.entity';
 
@@ -14,8 +20,10 @@ export class Rating {
   rate: number;
 
   @ManyToOne(() => User, (user) => user.ratings)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @ManyToOne(() => Recipe)
+  @JoinColumn({ name: 'recipe_id' })
   recipe: Recipe;
 }

@@ -3,12 +3,13 @@ import { OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Rating } from './rating.entity';
 import { Recipe } from './recipe.entity';
 import { Roles } from '../enums';
+import { Auditable } from './auditable.entity';
 
 /**
  * User
  **/
 @Entity('users')
-export class User {
+export class User extends Auditable {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -39,11 +40,11 @@ export class User {
   @JoinTable({
     name: 'favorites',
     joinColumn: {
-      name: 'user',
+      name: 'user_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'recipe',
+      name: 'recipe_id',
       referencedColumnName: 'id',
     },
   })

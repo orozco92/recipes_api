@@ -16,18 +16,18 @@ import { ListResponseDto } from '../../core/models/list-response';
 import { ListUserDto } from './dto/list-user.dto';
 import { ApiListResponse } from '../../core/decorators/api-paginated-response.decorator';
 import { UserDto } from './dto/user.dto';
-import { ListRequest } from '../../core/models/list-request';
+import { PagedAndSortedRequest } from '../../core/models/list-request';
 
 @Controller('users')
 @ApiTags('users')
-@ApiExtraModels(ListRequest)
+@ApiExtraModels(PagedAndSortedRequest)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
   @ApiListResponse(ListUserDto)
   async findAll(
-    @Query() query: ListRequest,
+    @Query() query: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListUserDto>> {
     return this.userService.findAll(query);
   }

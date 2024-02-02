@@ -6,7 +6,7 @@ import { User } from '../../core/entities';
 import { UserDto } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
-import { ListRequest } from '../../core/models/list-request';
+import { PagedAndSortedRequest } from '../../core/models/list-request';
 
 @Injectable()
 export class UserService {
@@ -17,7 +17,9 @@ export class UserService {
     return this.repo.save(user);
   }
 
-  async findAll(options: ListRequest): Promise<ListResponseDto<User>> {
+  async findAll(
+    options: PagedAndSortedRequest,
+  ): Promise<ListResponseDto<User>> {
     const query: FindManyOptions<User> = {
       skip: options.offset,
       take: options.limit,

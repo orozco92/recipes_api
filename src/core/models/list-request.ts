@@ -1,6 +1,6 @@
 import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
 
-export class PaginatedRequest {
+export class PagedRequest {
   @ApiProperty()
   offset: number;
   @ApiProperty()
@@ -12,6 +12,6 @@ export class SortedRequest {
   sort: [string, string][];
 }
 
-export class ListRequest extends PartialType(
-  IntersectionType(PaginatedRequest, SortedRequest),
+export class PagedAndSortedRequest extends PartialType(
+  IntersectionType(PagedRequest, SortedRequest),
 ) {}
