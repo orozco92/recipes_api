@@ -27,7 +27,7 @@ export class RecipeController {
   @Get()
   @ApiListResponse(ListRecipeDto)
   findAll() {
-    return this.recipeService.findAll();
+    return this.recipeService.findAll({});
   }
 
   @Get(':id')
