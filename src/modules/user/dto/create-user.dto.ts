@@ -7,4 +7,6 @@ export class CreateUserDto extends OmitType(User, [
   'recipes',
   'favorites',
   'role',
+  'createdAt',
+  'updatedAt',
 ] as const) {}

@@ -36,7 +36,9 @@ export class UserService {
 
   async findOne(id: number): Promise<UserDto> {
     const instance = await this.repo.findOneBy({ id });
-    delete instance.password;
+    if (instance) {
+      delete instance.password;
+    }
     return instance;
   }
 

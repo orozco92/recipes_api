@@ -4,6 +4,7 @@ import { Rating } from './rating.entity';
 import { Recipe } from './recipe.entity';
 import { Roles } from '../enums';
 import { Auditable } from './auditable.entity';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 
 /**
  * User
@@ -13,12 +14,15 @@ export class User extends Auditable {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @IsString()
   @Column({ name: 'username', type: 'varchar', length: 255 })
   username: string;
 
+  @IsEmail()
   @Column({ name: 'email', type: 'varchar', length: 255 })
   email: string;
 
+  @IsEnum(Roles)
   @Column({
     name: 'role',
     type: 'varchar',
@@ -27,6 +31,7 @@ export class User extends Auditable {
   })
   role: string;
 
+  @IsString()
   @Column({ name: 'password', type: 'varchar', length: 255 })
   password: string;
 
