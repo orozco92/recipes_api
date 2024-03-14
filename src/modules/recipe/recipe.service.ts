@@ -28,8 +28,8 @@ export class RecipeService {
     return {
       data: await this.repo.find(query),
       total: await this.repo.count(query),
-      limit: options.limit,
-      offset: options.offset,
+      limit: query.take,
+      offset: query.skip,
     };
   }
 
