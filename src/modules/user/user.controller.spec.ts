@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { PagedAndSortedRequest } from '../../core/models/list-request';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import { Roles } from '../../core/enums';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -67,28 +66,6 @@ describe('UserController', () => {
       expect(userService.findOne).toHaveBeenCalledTimes(1);
       expect(userService.findOne).toHaveBeenCalledWith(1);
       expect(result).toEqual({ id: 1 });
-    });
-  });
-
-  describe('create()', () => {
-    it('must create an user', async () => {
-      const body: CreateUserDto = {
-        username: 'testUser',
-        email: 'test@user.com',
-        password: 'password',
-      };
-      const response: UserDto = {
-        ...body,
-        id: 123,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        role: Roles.Customer,
-      };
-      jest.spyOn(userService, 'create').mockResolvedValue(response);
-      const result = await userController.create(body);
-      expect(userService.create).toHaveBeenCalledTimes(1);
-      expect(userService.create).toHaveBeenCalledWith(body);
-      expect(result).toEqual(response);
     });
   });
 

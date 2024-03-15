@@ -9,5 +9,8 @@ export default registerAs('Config', () => {
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
     },
+    auth: {
+      secret: process.env.SECRET ?? 'CATS_WITH_BOOTS',
+    },
   };
 });

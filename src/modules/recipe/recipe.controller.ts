@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
@@ -14,6 +15,9 @@ import { RecipeService } from './recipe.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ListRecipeDto } from './dto/list-recipe.dto';
 import { ApiListResponse } from '../../core/decorators/api-paginated-response.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../../core/decorators/get-user.decorator';
+import { ReqUser } from '../../core/types';
 
 @Controller('recipes')
 @ApiTags('recipes')
@@ -21,8 +25,9 @@ export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
   @Post()
-  create(@Body() createRecipeDto: CreateRecipeDto) {
-    return this.recipeService.create(createRecipeDto);
+  @UseGuards(AuthGuard('jwt'))
+  create(@Body() createRecipeDto: CreateRecipeDto, @GetUser() user: ReqUser) {
+    return this.recipeService.create(createRecipeDto, user);
   }
 
   @Get()
@@ -37,6 +42,7 @@ export class RecipeController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRecipeDto: UpdateRecipeDto,
@@ -45,6 +51,7 @@ export class RecipeController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.recipeService.remove(id);
   }
