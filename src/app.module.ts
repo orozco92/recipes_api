@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { environments } from './environment';
 import config from './config/config';
 import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DatabaseModule } from './database/database.module';
     UserModule,
     RecipeModule,
     DatabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
