@@ -31,7 +31,7 @@ export class User extends Auditable {
     length: 255,
     default: Roles.Customer,
   })
-  role: string;
+  role: Roles;
 
   @IsString()
   @Column({ name: 'password', type: 'varchar', length: 255 })
