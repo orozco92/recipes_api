@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Recipe, User } from '../../core/entities';
@@ -23,8 +27,8 @@ export class RecipeService {
     options: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListRecipeDto>> {
     const query: FindManyOptions<Recipe> = {
-      skip: options.offset,
-      take: options.limit,
+      skip: options.offset ? +options.offset : 0,
+      take: options.limit ? +options.limit : 20,
     };
     query.order = options.sort?.reduce((p, c) => (p[c[0]] = c[1]), {});
     return {
@@ -46,17 +50,27 @@ export class RecipeService {
     });
   }
 
-  async update(id: number, updateRecipeDto: UpdateRecipeDto): Promise<Recipe> {
-    const instance = await this.repo.findOneBy({ id });
+  async update(
+    id: number,
+    updateRecipeDto: UpdateRecipeDto,
+    user: ReqUser,
+  ): Promise<Recipe> {
+    const instance = await this.findAndCheckUser(id, user);
     this.repo.merge(instance, updateRecipeDto);
     return this.repo.save(instance);
   }
 
-  async remove(id: number): Promise<Recipe> {
+  async remove(id: number, user: ReqUser): Promise<Recipe> {
+    const instance = await this.findAndCheckUser(id, user);
+    await this.repo.delete(instance.id);
+    return instance;
+  }
+
+  async findAndCheckUser(id: number, user: ReqUser) {
     const instance = await this.repo.findOneBy({ id });
     if (!instance)
       throw new BadRequestException(`Recipe not found for id=${id}`);
-    await this.repo.delete(id);
+    if (instance.authorId !== user.id) throw new ForbiddenException();
     return instance;
   }
 }

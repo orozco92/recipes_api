@@ -11,18 +11,23 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ListResponseDto } from '../../core/models/list-response';
 import { ListUserDto } from './dto/list-user.dto';
 import { ApiListResponse } from '../../core/decorators/api-paginated-response.decorator';
 import { UserDto } from './dto/user.dto';
 import { PagedAndSortedRequest } from '../../core/models/list-request';
 import { AuthGuard } from '@nestjs/passport';
+import { Role } from '../../core/decorators/role.decorator';
+import { Roles } from '../../core/enums';
+import { RoleGuard } from '../auth/services/role.guard';
 
 @Controller('users')
 @ApiTags('users')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'), RoleGuard)
+@Role(Roles.Admin)
 @ApiExtraModels(PagedAndSortedRequest)
-@UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

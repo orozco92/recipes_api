@@ -16,8 +16,8 @@ export class UserService {
     options: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListUserDto>> {
     const query: FindManyOptions<ListUserDto> = {
-      skip: options.offset ?? 0,
-      take: options.limit ?? 20,
+      skip: options.offset ? +options.offset : 0,
+      take: options.limit ? +options.limit : 20,
       select: ['id', 'email', 'username', 'role'],
     };
     query.order = options.sort?.reduce((p, c) => ({ ...p, [c[0]]: c[1] }), {});

@@ -15,5 +15,5 @@ export default new DataSource({
   synchronize: false,
   logging: true,
   entities: ['src/core/entities/**/*.entity.ts'],
-  migrations: ['src/database/migrations/*.ts'],
+  migrations: ['src/database/migrations/*.ts', 'src/database/seeds/*.ts'],
 });

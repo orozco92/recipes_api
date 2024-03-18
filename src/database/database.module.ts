@@ -24,6 +24,7 @@ import { Ingredient, Rating, Recipe, Step, User } from '../core/entities';
           entities: [User, Recipe, Ingredient, Step, Rating],
           logger: 'simple-console',
           logging: ['query'],
+          migrations: ['src/migrations/*.ts', 'src/seeds/*.ts'],
         };
       },
     }),
