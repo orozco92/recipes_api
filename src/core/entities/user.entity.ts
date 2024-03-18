@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, Unique } from 'typeorm';
 import { OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Rating } from './rating.entity';
 import { Recipe } from './recipe.entity';
@@ -10,6 +10,8 @@ import { IsEmail, IsEnum, IsString } from 'class-validator';
  * User
  **/
 @Entity('users')
+@Unique(['username'])
+@Unique(['email'])
 export class User extends Auditable {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,11 +31,15 @@ export class User extends Auditable {
     length: 255,
     default: Roles.Customer,
   })
-  role: string;
+  role: Roles;
 
   @IsString()
   @Column({ name: 'password', type: 'varchar', length: 255 })
   password: string;
+
+  @IsString()
+  @Column({ name: 'salt', type: 'varchar', length: 255 })
+  salt: string;
 
   @OneToMany(() => Recipe, (recipe) => recipe.author)
   recipes: Recipe[];

@@ -5,6 +5,7 @@ export class UpdateUserDto extends PartialType(
   OmitType(User, [
     'id',
     'ratings',
+    'salt',
     'recipes',
     'favorites',
     'createdAt',

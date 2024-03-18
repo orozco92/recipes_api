@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Recipe } from './recipe.entity';
 import { Auditable } from './auditable.entity';
+import { IsNumber, IsString } from 'class-validator';
 
 /**
  * Step
@@ -16,9 +17,11 @@ export class Step extends Auditable {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @IsNumber()
   @Column({ name: 'number', type: 'int' })
   number: number;
 
+  @IsString()
   @Column({ name: 'description', type: 'text' })
   description: string;
 

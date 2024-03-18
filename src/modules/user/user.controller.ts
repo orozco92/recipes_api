@@ -1,26 +1,32 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   Query,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { ListResponseDto } from '../../core/models/list-response';
 import { ListUserDto } from './dto/list-user.dto';
 import { ApiListResponse } from '../../core/decorators/api-paginated-response.decorator';
 import { UserDto } from './dto/user.dto';
 import { PagedAndSortedRequest } from '../../core/models/list-request';
+import { AuthGuard } from '@nestjs/passport';
+import { Role } from '../../core/decorators/role.decorator';
+import { Roles } from '../../core/enums';
+import { RoleGuard } from '../auth/services/role.guard';
 
 @Controller('users')
 @ApiTags('users')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'), RoleGuard)
+@Role(Roles.Admin)
 @ApiExtraModels(PagedAndSortedRequest)
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -31,11 +37,6 @@ export class UserController {
     @Query() query: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListUserDto>> {
     return this.userService.findAll(query);
-  }
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
-    return this.userService.create(createUserDto);
   }
 
   @Get(':id')

@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ListResponseDto } from '../../core/models/list-response';
 import { User } from '../../core/entities';
@@ -13,17 +12,12 @@ import { ListUserDto } from './dto/list-user.dto';
 export class UserService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  create(createUserDto: CreateUserDto): Promise<UserDto> {
-    const user = this.repo.create(createUserDto);
-    return this.repo.save(user);
-  }
-
   async findAll(
     options: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListUserDto>> {
     const query: FindManyOptions<ListUserDto> = {
-      skip: options.offset ?? 0,
-      take: options.limit ?? 20,
+      skip: options.offset ? +options.offset : 0,
+      take: options.limit ? +options.limit : 20,
       select: ['id', 'email', 'username', 'role'],
     };
     query.order = options.sort?.reduce((p, c) => ({ ...p, [c[0]]: c[1] }), {});

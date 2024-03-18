@@ -1,9 +1,9 @@
 import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
 
 export class PagedRequest {
-  @ApiProperty()
+  @ApiProperty({ default: 0 })
   offset: number;
-  @ApiProperty()
+  @ApiProperty({ default: 10 })
   limit: number;
 }
 
