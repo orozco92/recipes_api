@@ -28,6 +28,7 @@ async function bootstrap() {
   // security config
   app.use(helmet());
   app.use(helmet.xPoweredBy());
+  app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(3000);

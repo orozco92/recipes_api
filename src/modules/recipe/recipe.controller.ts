@@ -23,6 +23,8 @@ import { PagedAndSortedRequest } from '../../core/models/list-request';
 import { Roles } from '../../core/enums';
 import { Role } from '../../core/decorators/role.decorator';
 import { RoleGuard } from '../auth/services/role.guard';
+import { Throttle } from '@nestjs/throttler';
+import { ThrottleConfig } from '../../config/throttle.config';
 
 @Controller('recipes')
 @ApiTags('recipes')
@@ -44,6 +46,7 @@ export class RecipeController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Role(Roles.Colaborator)
+  @Throttle({ default: ThrottleConfig.short })
   create(@Body() createRecipeDto: CreateRecipeDto, @GetUser() user: ReqUser) {
     return this.recipeService.create(createRecipeDto, user);
   }
@@ -52,6 +55,7 @@ export class RecipeController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Role(Roles.Colaborator)
+  @Throttle({ default: ThrottleConfig.short })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRecipeDto: UpdateRecipeDto,
@@ -64,6 +68,7 @@ export class RecipeController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Role(Roles.Colaborator)
+  @Throttle({ default: ThrottleConfig.short })
   remove(@Param('id', ParseIntPipe) id: number, @GetUser() user: ReqUser) {
     return this.recipeService.remove(id, user);
   }
