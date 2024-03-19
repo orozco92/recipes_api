@@ -21,6 +21,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from '../../core/decorators/role.decorator';
 import { Roles } from '../../core/enums';
 import { RoleGuard } from '../auth/services/role.guard';
+import { Throttle } from '@nestjs/throttler';
+import { ThrottleConfig } from '../../config/throttle.config';
 
 @Controller('users')
 @ApiTags('users')
@@ -45,6 +47,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @Throttle({ default: ThrottleConfig.short })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -53,6 +56,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @Throttle({ default: ThrottleConfig.short })
   remove(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
     return this.userService.remove(id);
   }

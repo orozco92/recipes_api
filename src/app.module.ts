@@ -8,6 +8,9 @@ import { environments } from './environment';
 import config from './config/config';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottleConfig } from './config/throttle.config';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -16,12 +19,19 @@ import { AuthModule } from './modules/auth/auth.module';
       load: [config],
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([ThrottleConfig.default]),
     UserModule,
     RecipeModule,
     DatabaseModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
