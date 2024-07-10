@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
+import { Roles } from '../../core/enums';
 import { genSalt, hash } from 'bcrypt';
 import { User } from '../../core/entities';
-import { Roles } from '../../core/enums';
 import { SignUpDto } from '../../modules/auth/dtos/sign-up.dto';
 
-export class Users1710688158769 implements MigrationInterface {
+export class Users1720555596406 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const users = [
       await this.createUser(
@@ -32,15 +32,15 @@ export class Users1710688158769 implements MigrationInterface {
       (
         item,
       ) => `INSERT INTO USERS (username, email, password, salt, role, created_at, updated_at)
-      VALUES (
-        '${item.username}',
-        '${item.email}',
-        '${item.password}',
-        '${item.salt}', 
-        '${item.role}',
-        '${item.createdAt.toISOString()}',
-        '${item.updatedAt.toISOString()}'
-      );`,
+          VALUES (
+            '${item.username}',
+            '${item.email}',
+            '${item.password}',
+            '${item.salt}', 
+            '${item.role}',
+            '${item.createdAt.toISOString()}',
+            '${item.updatedAt.toISOString()}'
+          );`,
     );
     await queryRunner.query(q.join(''));
   }
