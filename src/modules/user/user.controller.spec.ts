@@ -46,9 +46,9 @@ describe('UserController', () => {
   describe('findAll()', () => {
     it('must return a paged response froma given paged and sorted request', async () => {
       const params: PagedAndSortedRequest = {
-        limit: listResponse.limit,
+        pageSize: listResponse.limit,
         sort: [['id', 'asc']],
-        offset: listResponse.offset,
+        page: listResponse.offset,
       };
 
       jest.spyOn(userService, 'findAll');

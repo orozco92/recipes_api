@@ -167,8 +167,6 @@ export class Recipes1724077239466 implements MigrationInterface {
       true,
     );
 
-    console.log(ids);
-
     header = 'INSERT INTO INGREDIENTS (name, amount, unit) VALUES ';
     values = recipes
       .map((item) => item.ingredients)

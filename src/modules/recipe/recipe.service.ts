@@ -26,16 +26,22 @@ export class RecipeService {
   async findAll(
     options: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListRecipeDto>> {
+    const { page, pageSize } = options;
     const query: FindManyOptions<Recipe> = {
-      skip: options.offset ? +options.offset : 0,
-      take: options.limit ? +options.limit : 20,
+      skip: (page - 1) * pageSize,
+      take: pageSize ? pageSize : 20,
     };
     query.order = options.sort?.reduce((p, c) => (p[c[0]] = c[1]), {});
+    const data = await this.repo.find(query);
+    const total = await this.repo.count(query);
+    const totalPages = Math.ceil(total / pageSize);
+
     return {
-      data: await this.repo.find(query),
-      total: await this.repo.count(query),
-      limit: query.take,
-      offset: query.skip,
+      data,
+      total,
+      pageSize,
+      page,
+      totalPages,
     };
   }
 
