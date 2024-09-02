@@ -1,5 +1,6 @@
-export enum Difficulties {
-  Low = 'Low',
-  Medium = 'Medium',
-  High = 'High',
+export enum RecipeDifficulty {
+  BEGINNER = 'Beginner',
+  INTERMEDIATE = 'Intermediate',
+  ADVANCED = 'Advanced',
+  EXPERT = 'Expert',
 }
