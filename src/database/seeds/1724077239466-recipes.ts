@@ -23,8 +23,8 @@ export class Recipes1724077239466 implements MigrationInterface {
         servings: 3,
         cookingTime: 13,
         calories: 249,
-        category: MealType.LUNCH,
-        difficulty: RecipeDifficulty.BEGINNER,
+        category: MealType.Lunch,
+        difficulty: RecipeDifficulty.Beginner,
         ingredients: [
           {
             name: 'Tilapia fillets',
@@ -85,7 +85,7 @@ export class Recipes1724077239466 implements MigrationInterface {
       },
       {
         name: 'Tortilla francesa tradicional',
-        difficulty: RecipeDifficulty.BEGINNER,
+        difficulty: RecipeDifficulty.Beginner,
         cookingTime: 5,
         servings: 1,
         ingredients: [
