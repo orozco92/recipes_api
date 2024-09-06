@@ -23,7 +23,7 @@ export class Recipes1724077239466 implements MigrationInterface {
         servings: 3,
         cookingTime: 13,
         calories: 249,
-        category: MealType.Lunch,
+        mealType: MealType.Lunch,
         difficulty: RecipeDifficulty.Beginner,
         ingredients: [
           {
@@ -153,7 +153,7 @@ export class Recipes1724077239466 implements MigrationInterface {
      ${item.cookingTime ?? null}, 
      ${item.calories ?? null}, 
      '${item.difficulty}', 
-     ${!!item.category ? "'" + item.category + "'" : null}, 
+     ${!!item.mealType ? "'" + item.mealType + "'" : null}, 
      ${item.authorId}, 
      '${item.createdAt.toISOString()}', 
      '${item.updatedAt.toISOString()}'

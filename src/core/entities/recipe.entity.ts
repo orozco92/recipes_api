@@ -33,8 +33,8 @@ export class Recipe extends Auditable {
   servings: number;
 
   @IsString()
-  @Column({ name: 'category', type: 'varchar', length: 255, nullable: true })
-  category: MealType;
+  @Column({ name: 'mealType', type: 'varchar', length: 255, nullable: true })
+  mealType: MealType;
 
   @IsString()
   @Column({ name: 'difficulty', type: 'varchar', length: 255, nullable: true })
