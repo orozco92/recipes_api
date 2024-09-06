@@ -15,17 +15,22 @@ export class UserService {
   async findAll(
     options: PagedAndSortedRequest,
   ): Promise<ListResponseDto<ListUserDto>> {
-    const query: FindManyOptions<ListUserDto> = {
-      skip: options.offset ? +options.offset : 0,
-      take: options.limit ? +options.limit : 20,
+    const { page, pageSize } = options;
+    const query: FindManyOptions<User> = {
+      skip: (page - 1) * pageSize,
+      take: pageSize ? +pageSize : 20,
       select: ['id', 'email', 'username', 'role'],
     };
-    query.order = options.sort?.reduce((p, c) => ({ ...p, [c[0]]: c[1] }), {});
+    query.order = options.sort?.reduce((p, c) => (p[c[0]] = c[1]), {});
+    const data = await this.repo.find(query);
+    const total = await this.repo.count(query);
+    const totalPages = Math.ceil(total / pageSize);
     return {
-      data: await this.repo.find(query),
-      total: await this.repo.count(query),
-      limit: query.take,
-      offset: query.skip,
+      data,
+      total,
+      pageSize,
+      page,
+      totalPages,
     };
   }
 

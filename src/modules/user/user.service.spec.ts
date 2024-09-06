@@ -39,14 +39,14 @@ describe('UserService', () => {
   );
   const listCustomResolvedValue: ListResponseDto<ListUserDto> = {
     data: userList,
-    limit: 3,
-    offset: 1,
+    pageSize: 3,
+    page: 1,
     total: 6,
   };
   const listDefaultResolvedValue: ListResponseDto<ListUserDto> = {
     data: userList,
-    limit: 20,
-    offset: 0,
+    pageSize: 20,
+    page: 0,
     total: 6,
   };
 
@@ -128,8 +128,8 @@ describe('UserService', () => {
       jest.spyOn(userRepo, 'count').mockReset().mockResolvedValue(6);
 
       const result = await userService.findAll({
-        limit: take,
-        offset: skip,
+        pageSize: take,
+        page: skip,
         sort: [
           ['email', 'asc'],
           ['role', 'desc'],

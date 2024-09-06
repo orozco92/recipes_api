@@ -6,10 +6,12 @@ export class ListResponseDto<T> {
   total: number;
   @ApiProperty()
   @IsNumber()
-  limit: number;
+  pageSize: number;
   @ApiProperty()
   @IsNumber()
-  offset: number;
+  page: number;
+  @IsNumber()
+  totalPages: number;
   @ApiProperty({ type: Object })
   data: T[];
 }

@@ -11,6 +11,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ThrottleConfig } from './config/throttle.config';
 import { APP_GUARD } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'node:path';
 
 @Module({
   imports: [
@@ -20,6 +22,9 @@ import { APP_GUARD } from '@nestjs/core';
       isGlobal: true,
     }),
     ThrottlerModule.forRoot([ThrottleConfig.default]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     UserModule,
     RecipeModule,
     DatabaseModule,

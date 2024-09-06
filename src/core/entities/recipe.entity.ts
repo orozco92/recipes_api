@@ -5,6 +5,8 @@ import { Step } from './step.entity';
 import { User } from './user.entity';
 import { Auditable } from './auditable.entity';
 import { IsNumber, IsObject, IsString } from 'class-validator';
+import { RecipeDifficulty } from '../enums';
+import { MealType } from '../enums/meal-type.enum';
 
 /**
  * Recipe
@@ -31,8 +33,12 @@ export class Recipe extends Auditable {
   servings: number;
 
   @IsString()
+  @Column({ name: 'category', type: 'varchar', length: 255, nullable: true })
+  category: MealType;
+
+  @IsString()
   @Column({ name: 'difficulty', type: 'varchar', length: 255, nullable: true })
-  difficulty: string;
+  difficulty: RecipeDifficulty;
 
   @IsNumber()
   @Column({ name: 'calories', type: 'integer', nullable: true })

@@ -46,7 +46,7 @@ export class Users1720555596406 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('TRUNCATE TABLE USERS;');
+    await queryRunner.query('DELETE FROM USERS;');
   }
 
   async createUser(signUpDto: SignUpDto, role: Roles) {
