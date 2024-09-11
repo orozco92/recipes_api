@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PagedAndSortedRequest } from '../../../core/models/list-request';
+import { FilteredPagedAndSortedRequest } from '../../../core/models/list-request';
 import { MealType } from '../../../core/enums/meal-type.enum';
 import { RecipeDifficulty } from '../../../core/enums';
 
-export class ListRecipeRequest extends PagedAndSortedRequest {
+export class ListRecipeRequest extends FilteredPagedAndSortedRequest {
   @ApiProperty({
     enum: MealType,
     enumName: 'MealType',
