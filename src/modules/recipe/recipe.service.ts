@@ -9,9 +9,9 @@ import { Recipe, User } from '../../core/entities';
 import { ListResponseDto } from '../../core/models/list-response';
 import { ListRecipeDto } from './dto/list-recipe.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
-import { PagedAndSortedRequest } from '../../core/models/list-request';
+import { FindManyOptions, ILike, Repository } from 'typeorm';
 import { ReqUser } from '../../core/types';
+import { ListRecipeRequest } from './dto/list-recipe-request';
 
 @Injectable()
 export class RecipeService {
@@ -24,13 +24,19 @@ export class RecipeService {
   }
 
   async findAll(
-    options: PagedAndSortedRequest,
+    options: ListRecipeRequest,
   ): Promise<ListResponseDto<ListRecipeDto>> {
-    const { page, pageSize } = options;
+    const { page, pageSize, difficulty, mealType, search } = options;
     const query: FindManyOptions<Recipe> = {
       skip: (page - 1) * pageSize,
       take: pageSize ? pageSize : 20,
+      where: {},
     };
+
+    if (mealType) query.where['category'] = mealType;
+    if (difficulty) query.where['difficulty'] = difficulty;
+    if (search) query.where['name'] = ILike(`%${search}%`);
+
     query.order = options.sort?.reduce((p, c) => (p[c[0]] = c[1]), {});
     const data = await this.repo.find(query);
     const total = await this.repo.count(query);

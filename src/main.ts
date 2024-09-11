@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { User } from './core/entities';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { requestLogger } from './core/middlewares/request-logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,7 +31,11 @@ async function bootstrap() {
   app.use(helmet.xPoweredBy());
   app.enableCors();
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ transform: true, enableDebugMessages: true }),
+  );
+
+  app.use(requestLogger);
 
   const port = process.env.PORT;
   await app.listen(port);

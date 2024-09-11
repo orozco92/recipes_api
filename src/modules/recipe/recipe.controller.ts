@@ -19,12 +19,12 @@ import { ApiListResponse } from '../../core/decorators/api-paginated-response.de
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../../core/decorators/get-user.decorator';
 import { ReqUser } from '../../core/types';
-import { PagedAndSortedRequest } from '../../core/models/list-request';
 import { Roles } from '../../core/enums';
 import { Role } from '../../core/decorators/role.decorator';
 import { RoleGuard } from '../auth/services/role.guard';
 import { Throttle } from '@nestjs/throttler';
 import { ThrottleConfig } from '../../config/throttle.config';
+import { ListRecipeRequest } from './dto/list-recipe-request';
 
 @Controller('recipes')
 @ApiTags('recipes')
@@ -33,7 +33,7 @@ export class RecipeController {
 
   @Get()
   @ApiListResponse(ListRecipeDto)
-  findAll(@Query() query: PagedAndSortedRequest) {
+  findAll(@Query() query: ListRecipeRequest) {
     return this.recipeService.findAll(query);
   }
 

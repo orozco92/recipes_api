@@ -23,6 +23,15 @@ export class SortedRequest {
   sort: [string, string][];
 }
 
+export class SearchRequest {
+  @ApiProperty()
+  search: string;
+}
+
 export class PagedAndSortedRequest extends PartialType(
   IntersectionType(PagedRequest, SortedRequest),
+) {}
+
+export class FilteredPagedAndSortedRequest extends PartialType(
+  IntersectionType(SearchRequest, PagedRequest, SortedRequest),
 ) {}

@@ -23,7 +23,7 @@ export class Recipes1724077239466 implements MigrationInterface {
         servings: 3,
         cookingTime: 13,
         calories: 249,
-        category: MealType.Lunch,
+        mealType: MealType.Lunch,
         difficulty: RecipeDifficulty.Beginner,
         ingredients: [
           {
@@ -80,6 +80,7 @@ export class Recipes1724077239466 implements MigrationInterface {
           },
         ],
         authorId: user.id,
+        picture: 'http://localhost:3000/images/Pan-Fried-Tilapia.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -140,12 +141,13 @@ export class Recipes1724077239466 implements MigrationInterface {
           },
         ],
         authorId: user.id,
+        picture: 'http://localhost:3000/images/Tortilla-francesa.webp',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     ];
     let header =
-      'INSERT INTO RECIPES (name, servings, cooking_time, calories, difficulty, category, author_id, created_at, updated_at) VALUES ';
+      'INSERT INTO RECIPES (name, servings, cooking_time, calories, difficulty, meal_type, author_id, picture, created_at, updated_at) VALUES ';
     let values = recipes.map(
       (item) => `(
     '${item.name}',
@@ -153,15 +155,16 @@ export class Recipes1724077239466 implements MigrationInterface {
      ${item.cookingTime ?? null}, 
      ${item.calories ?? null}, 
      '${item.difficulty}', 
-     ${!!item.category ? "'" + item.category + "'" : null}, 
+     ${!!item.mealType ? "'" + item.mealType + "'" : null}, 
      ${item.authorId}, 
+     '${item.picture}', 
      '${item.createdAt.toISOString()}', 
      '${item.updatedAt.toISOString()}'
     )\n`,
     );
 
     await this.executeQuery(queryRunner, header, values);
-    const ids = await queryRunner.query(
+    await queryRunner.query(
       `SELECT id from RECIPES WHERE created_at in (${recipes.map((it) => `'${it.createdAt.toISOString()}'`).join(', ')});`,
       undefined,
       true,
