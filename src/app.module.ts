@@ -13,6 +13,8 @@ import { ThrottleConfig } from './config/throttle.config';
 import { APP_GUARD } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
+import { Response } from 'express';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -24,8 +26,14 @@ import { join } from 'node:path';
     ThrottlerModule.forRoot([ThrottleConfig.default]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
+      serveStaticOptions: {
+        setHeaders: (res: Response) => {
+          res.setHeader('cross-origin-resource-policy', 'cross-origin');
+        },
+      },
     }),
     UserModule,
+    ProfileModule,
     RecipeModule,
     DatabaseModule,
     AuthModule,
