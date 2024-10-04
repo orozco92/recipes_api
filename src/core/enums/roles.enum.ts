@@ -1,5 +1,5 @@
 export enum Roles {
-  Customer = 'CUSTOMER',
+  Comunity = 'COMMUNITY',
   Colaborator = 'COLABORATOR',
   Admin = 'ADMIN',
 }

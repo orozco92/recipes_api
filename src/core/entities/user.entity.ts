@@ -4,7 +4,7 @@ import { Rating } from './rating.entity';
 import { Recipe } from './recipe.entity';
 import { Roles } from '../enums';
 import { Auditable } from './auditable.entity';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsString, IsOptional } from 'class-validator';
 
 /**
  * User
@@ -29,17 +29,32 @@ export class User extends Auditable {
     name: 'role',
     type: 'varchar',
     length: 255,
-    default: Roles.Customer,
+    default: Roles.Comunity,
   })
   role: Roles;
 
   @IsString()
-  @Column({ name: 'password', type: 'varchar', length: 255 })
+  @Column({ name: 'password', type: 'varchar', length: 255, nullable: true })
   password: string;
 
   @IsString()
-  @Column({ name: 'salt', type: 'varchar', length: 255 })
+  @Column({ name: 'salt', type: 'varchar', length: 255, nullable: true })
   salt: string;
+
+  @IsString()
+  @IsOptional()
+  @Column({ name: 'first_name', type: 'varchar', length: 255, nullable: true })
+  firstName?: string;
+
+  @IsString()
+  @IsOptional()
+  @Column({ name: 'last_name', type: 'varchar', length: 255, nullable: true })
+  lastName?: string;
+
+  @IsString()
+  @IsOptional()
+  @Column({ name: 'picture', type: 'varchar', length: 255, nullable: true })
+  picture?: string;
 
   @OneToMany(() => Recipe, (recipe) => recipe.author)
   recipes: Recipe[];

@@ -33,7 +33,7 @@ export class RecipeService {
       where: {},
     };
 
-    if (mealType) query.where['category'] = mealType;
+    if (mealType) query.where['mealType'] = mealType;
     if (difficulty) query.where['difficulty'] = difficulty;
     if (search) query.where['name'] = ILike(`%${search}%`);
 
