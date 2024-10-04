@@ -11,6 +11,9 @@ export default registerAs('Config', () => {
     },
     auth: {
       secret: process.env.SECRET,
+      googleClientId: process.env.GOOGLE_CLIENT_ID,
+      googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      googleOAuthCallbackUrl: process.env.GOOGLE_OAUTH_CALLBACK_URL,
     },
   };
 });
