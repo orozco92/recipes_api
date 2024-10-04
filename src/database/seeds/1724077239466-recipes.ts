@@ -164,34 +164,42 @@ export class Recipes1724077239466 implements MigrationInterface {
     );
 
     await this.executeQuery(queryRunner, header, values);
-    await queryRunner.query(
-      `SELECT id from RECIPES WHERE created_at in (${recipes.map((it) => `'${it.createdAt.toISOString()}'`).join(', ')});`,
+    const result = await queryRunner.query(
+      `SELECT id, name from RECIPES WHERE created_at in (${recipes.map((it) => `'${it.createdAt.toISOString()}'`).join(', ')});`,
       undefined,
       true,
     );
 
-    header = 'INSERT INTO INGREDIENTS (name, amount, unit) VALUES ';
-    values = recipes
-      .map((item) => item.ingredients)
-      .flat()
-      .map(
-        (item) => `(
-      '${item.name}',
-       ${!!item.amount ? "'" + item.amount + "'" : null}, 
-       ${!!item.unit ? "'" + item.unit + "'" : null})\n`,
-      );
+    const recipesDb = result.records;
+
+    header = 'INSERT INTO INGREDIENTS (name, amount, unit, recipe_id) VALUES ';
+    values = recipes.map((recipe) => {
+      const id = recipesDb.find((item) => item.name === recipe.name).id;
+      return recipe.ingredients
+        .map(
+          (item) => `(
+            '${item.name}',
+            ${!!item.amount ? "'" + item.amount + "'" : null}, 
+            ${!!item.unit ? "'" + item.unit + "'" : null},
+            ${id})\n`,
+        )
+        .join(',');
+    });
 
     await this.executeQuery(queryRunner, header, values);
 
-    header = 'INSERT INTO STEPS (number, description) VALUES ';
-    values = recipes
-      .map((item) => item.steps)
-      .flat()
-      .map(
-        (item) => `(
-      '${item.number}',
-      '${item.description}')\n`,
-      );
+    header = 'INSERT INTO STEPS (number, description, recipe_id) VALUES ';
+    values = recipes.map((recipe) => {
+      const id = recipesDb.find((item) => item.name === recipe.name).id;
+      return recipe.steps
+        .map(
+          (item) => `(
+                '${item.number}',
+                '${item.description}',
+                ${id})\n`,
+        )
+        .join(',');
+    });
 
     await this.executeQuery(queryRunner, header, values);
   }
