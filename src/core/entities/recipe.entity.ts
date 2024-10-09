@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { PrimaryGeneratedColumn } from 'typeorm';
 import { Ingredient } from './ingredient.entity';
 import { Step } from './step.entity';
@@ -74,4 +82,19 @@ export class Recipe extends Auditable {
     onDelete: 'CASCADE',
   })
   steps: Step[];
+
+  @IsObject()
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: 'favorites',
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    joinColumn: {
+      name: 'recipe_id',
+      referencedColumnName: 'id',
+    },
+  })
+  favoriteOf: User[];
 }

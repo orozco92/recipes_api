@@ -37,6 +37,14 @@ export class RecipeController {
     return this.recipeService.findAll(query);
   }
 
+  @Get('/favorites')
+  @ApiListResponse(ListRecipeDto)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  getFavorites(@Query() query: ListRecipeRequest, @GetUser() user: ReqUser) {
+    return this.recipeService.getFavorites(query, user.id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.recipeService.findOne(id);
