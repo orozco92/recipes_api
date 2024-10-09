@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../../core/decorators/get-user.decorator';
+import { ReqUser } from '../../core/types';
 
 @Controller('profile')
 export class ProfileController {
@@ -26,30 +28,30 @@ export class ProfileController {
 
   @Get('favorites/ids')
   @UseGuards(AuthGuard())
-  getFavoriteIds(@Request() req) {
-    return this.service.getFavoriteIds(req.user.id);
+  getFavoriteIds(@GetUser() user: ReqUser) {
+    return this.service.getFavoriteIds(user.id);
   }
 
   @Get('favorites')
   @UseGuards(AuthGuard())
-  favorites(@Request() req) {
-    return this.service.me(req.user.id);
+  favorites(@GetUser() user: ReqUser) {
+    return this.service.me(user.id);
   }
 
   @Patch('favorites')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.NO_CONTENT)
-  addToFavorites(@Request() req, @Body('recipeId') recipeId: number) {
-    return this.service.addToFavorites(req.user.id, recipeId);
+  addToFavorites(@GetUser() user: ReqUser, @Body('recipeId') recipeId: number) {
+    return this.service.addToFavorites(user.id, recipeId);
   }
 
   @Delete('favorites/:recipeId')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.NO_CONTENT)
   removeFromFavorites(
-    @Request() req,
+    @GetUser() user: ReqUser,
     @Param('recipeId', ParseIntPipe) recipeId: number,
   ) {
-    return this.service.removeFromFavorites(req.user.id, recipeId);
+    return this.service.removeFromFavorites(user.id, recipeId);
   }
 }
