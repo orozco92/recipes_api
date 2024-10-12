@@ -1,8 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recipe, User } from '../../core/entities';
 import { Repository } from 'typeorm';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
+import { INVALID_CREDENTIALS } from '../../core/constants';
+import { compare, hash } from 'bcrypt';
 
 @Injectable()
 export class ProfileService {
@@ -112,5 +120,17 @@ export class ProfileService {
     await this.userRepo.update(user.id, data);
 
     return this.me(user.id);
+  }
+
+  async resetPassword(
+    resetPasswordDto: UpdatePasswordDto,
+    userId: number,
+  ): Promise<void> {
+    const user = await this.userRepo.findOneBy({ id: userId });
+    if (!user) throw new UnauthorizedException(INVALID_CREDENTIALS);
+    const match = await compare(resetPasswordDto.oldPassword, user.password);
+    if (!match) throw new UnauthorizedException(INVALID_CREDENTIALS);
+    user.password = await hash(resetPasswordDto.newPassword, user.salt);
+    await this.userRepo.save(user);
   }
 }

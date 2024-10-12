@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../../core/decorators/get-user.decorator';
 import { ReqUser } from '../../core/types';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -25,6 +26,12 @@ export class ProfileController {
   @UseGuards(AuthGuard())
   me(@Request() req) {
     return this.service.me(req.user.id);
+  }
+
+  @Patch('me')
+  @UseGuards(AuthGuard())
+  updateProfileData(@Body() body: UpdateProfileDto, @GetUser() user: ReqUser) {
+    return this.service.updateProfileData(body, user.id);
   }
 
   @Get('favorites/ids')
@@ -56,9 +63,10 @@ export class ProfileController {
     return this.service.removeFromFavorites(user.id, recipeId);
   }
 
-  @Patch('me')
+  @Patch('resetPassword')
   @UseGuards(AuthGuard())
-  updateProfileData(@Body() data: UpdateProfileDto, @GetUser() user: ReqUser) {
-    return this.service.updateProfileData(data, user.id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  resetPassword(@Body() body: UpdatePasswordDto, @GetUser() user: ReqUser) {
+    return this.service.resetPassword(body, user.id);
   }
 }
