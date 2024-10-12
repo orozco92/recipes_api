@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recipe, User } from '../../core/entities';
 import { Repository } from 'typeorm';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
 
 @Injectable()
 export class ProfileService {
@@ -95,5 +96,21 @@ export class ProfileService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async updateProfileData(
+    data: UpdateProfileDto,
+    userId: number,
+  ): Promise<
+    Pick<
+      User,
+      'id' | 'username' | 'email' | 'firstName' | 'lastName' | 'picture'
+    >
+  > {
+    const user = await this.userRepo.findOneBy({ id: userId });
+    if (!user) throw new HttpException('Invalid user', HttpStatus.NOT_FOUND);
+    await this.userRepo.update(user.id, data);
+
+    return this.me(user.id);
   }
 }

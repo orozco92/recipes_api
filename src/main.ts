@@ -2,9 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { User } from './core/entities';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import helmet from 'helmet';
 import { requestLogger } from './core/middlewares/request-logger';
+import { DetailedValidationPipe } from './core/pipes/detailed-validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,7 +33,10 @@ async function bootstrap() {
   app.enableCors();
 
   app.useGlobalPipes(
-    new ValidationPipe({ transform: true, enableDebugMessages: true }),
+    new DetailedValidationPipe({
+      transform: true,
+      enableDebugMessages: true,
+    }),
   );
 
   app.use(requestLogger);

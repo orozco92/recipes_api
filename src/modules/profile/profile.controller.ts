@@ -15,6 +15,7 @@ import { ProfileService } from './profile.service';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../../core/decorators/get-user.decorator';
 import { ReqUser } from '../../core/types';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
 
 @Controller('profile')
 export class ProfileController {
@@ -53,5 +54,11 @@ export class ProfileController {
     @Param('recipeId', ParseIntPipe) recipeId: number,
   ) {
     return this.service.removeFromFavorites(user.id, recipeId);
+  }
+
+  @Patch('me')
+  @UseGuards(AuthGuard())
+  updateProfileData(@Body() data: UpdateProfileDto, @GetUser() user: ReqUser) {
+    return this.service.updateProfileData(data, user.id);
   }
 }
