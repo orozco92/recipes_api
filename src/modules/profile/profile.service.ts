@@ -1,13 +1,28 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recipe, User } from '../../core/entities';
 import { Repository } from 'typeorm';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
+import { INVALID_CREDENTIALS } from '../../core/constants';
+import { compare, hash } from 'bcrypt';
+import { R2StorageService } from '../storage/r2-storage.service';
+import config from '../../config/config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Recipe) private recipeRepo: Repository<Recipe>,
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
+    private storageService: R2StorageService,
   ) {}
 
   me(
@@ -95,5 +110,52 @@ export class ProfileService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async updateProfileData(
+    data: UpdateProfileDto,
+    userId: number,
+  ): Promise<
+    Pick<
+      User,
+      'id' | 'username' | 'email' | 'firstName' | 'lastName' | 'picture'
+    >
+  > {
+    const user = await this.userRepo.findOneBy({ id: userId });
+    if (!user) throw new HttpException('Invalid user', HttpStatus.NOT_FOUND);
+    await this.userRepo.update(user.id, data);
+
+    return this.me(user.id);
+  }
+
+  async resetPassword(
+    resetPasswordDto: UpdatePasswordDto,
+    userId: number,
+  ): Promise<void> {
+    const user = await this.userRepo.findOneBy({ id: userId });
+    if (!user) throw new UnauthorizedException(INVALID_CREDENTIALS);
+    const match = await compare(resetPasswordDto.oldPassword, user.password);
+    if (!match) throw new UnauthorizedException(INVALID_CREDENTIALS);
+    user.password = await hash(resetPasswordDto.newPassword, user.salt);
+    await this.userRepo.save(user);
+  }
+
+  async updateProfilePicture(userId: number, filename: string) {
+    const user = await this.userRepo.findOneBy({ id: userId });
+
+    if (user.picture) await this.removeOldPicture(user.picture);
+
+    const picture = `${this.configService.storage.publicDomain}/${filename}`;
+    await this.userRepo.update(user.id, { picture });
+
+    return this.me(userId);
+  }
+
+  async removeOldPicture(oldName: string) {
+    const key = oldName.replace(
+      this.configService.storage.publicDomain + '/',
+      '',
+    );
+    return this.storageService.removeFile(key);
   }
 }

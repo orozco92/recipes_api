@@ -15,5 +15,12 @@ export default registerAs('Config', () => {
       googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
       googleOAuthCallbackUrl: process.env.GOOGLE_OAUTH_CALLBACK_URL,
     },
+    storage: {
+      publicDomain: process.env.STORAGE_PUBLIC_DOMAIN,
+      cloudflareAccessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
+      cloudflareSecretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+      cloudflareEndpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
+      cloudflareBucket: process.env.CLOUDFLARE_R2_BUCKET,
+    },
   };
 });
