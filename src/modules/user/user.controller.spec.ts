@@ -19,7 +19,7 @@ describe('UserController', () => {
     id: 123,
     createdAt: new Date(),
     updatedAt: new Date(),
-    role: Roles.Comunity,
+    role: Roles.Community,
   };
 
   beforeEach(async () => {
@@ -81,7 +81,7 @@ describe('UserController', () => {
         id: 123,
         createdAt: new Date(),
         updatedAt: new Date(),
-        role: Roles.Comunity,
+        role: Roles.Community,
       };
       jest.spyOn(userService, 'update').mockResolvedValue(response as UserDto);
       const result = await userController.update(123, body);

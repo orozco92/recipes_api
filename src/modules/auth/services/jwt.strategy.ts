@@ -8,6 +8,7 @@ import { User } from '../../../core/entities';
 import { Repository } from 'typeorm';
 import { JwtTokenPayload } from '../../../core/interfaces/jwt-token-payload.interface';
 import { ReqUser } from '../../../core/types';
+import { DISABLED_USER, INVALID_CREDENTIALS } from '../../../core/constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -24,7 +25,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtTokenPayload) {
     const user = await this.repo.findOneBy({ username: payload.username });
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException(INVALID_CREDENTIALS);
+    if (!user.enabled) throw new UnauthorizedException(DISABLED_USER);
     const reqUser: ReqUser = {
       id: user.id,
       username: user.username,

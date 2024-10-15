@@ -25,7 +25,7 @@ export class Users1720555596406 implements MigrationInterface {
           email: 'customer@recipes.com',
           password: 'password',
         },
-        Roles.Comunity,
+        Roles.Community,
       ),
     ];
     const q = users.map(

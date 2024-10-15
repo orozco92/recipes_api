@@ -20,11 +20,12 @@ import { ReqUser } from '../../core/types';
 import { UpdateProfileDto } from './dtos/update-profile.dto';
 import { UpdatePasswordDto } from './dtos/update-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileUpload } from '../../core/models/file-upload';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard())
+@ApiTags('profile')
 @Controller('profile')
 export class ProfileController {
   constructor(private service: ProfileService) {}
@@ -64,10 +65,10 @@ export class ProfileController {
     return this.service.removeFromFavorites(user.id, recipeId);
   }
 
-  @Patch('resetPassword')
+  @Patch('updatePassword')
   @HttpCode(HttpStatus.NO_CONTENT)
-  resetPassword(@Body() body: UpdatePasswordDto, @GetUser() user: ReqUser) {
-    return this.service.resetPassword(body, user.id);
+  updatePassword(@Body() body: UpdatePasswordDto, @GetUser() user: ReqUser) {
+    return this.service.updatePassword(body, user.id);
   }
 
   @Patch('updatePicture')

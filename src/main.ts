@@ -19,8 +19,9 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('auth', 'security module')
-    .addTag('users', 'user module crud opperations')
     .addTag('recipes', 'recipes module crud opperations')
+    .addTag('profile', 'auth user profile actions')
+    .addTag('users', 'user module crud opperations')
     .build();
   const document = SwaggerModule.createDocument(app, config, {
     extraModels: [User],
