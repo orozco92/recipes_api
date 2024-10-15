@@ -60,4 +60,22 @@ export class UserController {
   remove(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
     return this.userService.remove(id);
   }
+
+  @Patch(':id/enable')
+  @Throttle({ default: ThrottleConfig.short })
+  enableUser(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.enableUser(id);
+  }
+
+  @Patch(':id/disable')
+  @Throttle({ default: ThrottleConfig.short })
+  disableUser(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.disableUser(id);
+  }
+
+  @Patch(':id/resetPassword')
+  @Throttle({ default: ThrottleConfig.short })
+  resetPassword(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.disableUser(id);
+  }
 }
