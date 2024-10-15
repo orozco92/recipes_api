@@ -12,7 +12,11 @@ import { Roles } from '../../../core/enums';
 import { genSalt, hash, compare } from 'bcrypt';
 import { DbErrorCodes } from '../../../core/enums/db-error-codes.enum';
 import { SignInDto } from '../dtos/sign-in.dto';
-import { DUPLICATED_USER, INVALID_CREDENTIALS } from '../../../core/constants';
+import {
+  DISABLED_USER,
+  DUPLICATED_USER,
+  INVALID_CREDENTIALS,
+} from '../../../core/constants';
 import { JwtService } from '@nestjs/jwt';
 import { JwtTokenPayload } from '../../../core/interfaces/jwt-token-payload.interface';
 import { OAuthUser } from '../../../core/interfaces/user-request';
@@ -26,7 +30,7 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto) {
     const user: User = this.repo.create(signUpDto);
-    user.role = Roles.Comunity;
+    user.role = Roles.Community;
     user.salt = await genSalt();
     user.password = await hash(signUpDto.password, user.salt);
 
@@ -49,6 +53,7 @@ export class AuthService {
     if (!user) throw new UnauthorizedException(INVALID_CREDENTIALS);
     const match = await compare(signInDto.password, user.password);
     if (!match) throw new UnauthorizedException(INVALID_CREDENTIALS);
+    if (!user.enabled) throw new UnauthorizedException(DISABLED_USER);
 
     const accessToken = this.getAccessToken(user);
     return { accessToken };
@@ -56,16 +61,18 @@ export class AuthService {
 
   async oauthSigning(oauthUser: OAuthUser) {
     let user = await this.repo.findOneBy({ email: oauthUser.email });
-    if (!user)
+    if (!!user && !user.enabled) throw new UnauthorizedException(DISABLED_USER);
+    if (!user) {
       user = this.repo.create({
         email: oauthUser.email,
         username: oauthUser.email,
         firstName: oauthUser.firstName,
         lastName: oauthUser.lastName,
         picture: oauthUser.picture,
-        role: Roles.Comunity,
+        role: Roles.Community,
       });
-    await this.repo.save(user);
+      await this.repo.save(user);
+    }
     const accessToken = this.getAccessToken(user);
     return { accessToken };
   }
