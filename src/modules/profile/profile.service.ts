@@ -128,7 +128,7 @@ export class ProfileService {
     return this.me(user.id);
   }
 
-  async resetPassword(
+  async updatePassword(
     resetPasswordDto: UpdatePasswordDto,
     userId: number,
   ): Promise<void> {
