@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
@@ -19,10 +20,17 @@ import {
 } from 'typeorm';
 import { ReqUser } from '../../core/types';
 import { ListRecipeRequest } from './dto/list-recipe-request';
+import { R2StorageService } from '../storage/r2-storage.service';
+import { ConfigType } from '@nestjs/config';
+import config from '../../config/config';
 
 @Injectable()
 export class RecipeService {
-  constructor(@InjectRepository(Recipe) private repo: Repository<Recipe>) {}
+  constructor(
+    @InjectRepository(Recipe) private repo: Repository<Recipe>,
+    private storageService: R2StorageService,
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
+  ) {}
 
   create(createRecipeDto: CreateRecipeDto, user: ReqUser): Promise<Recipe> {
     const recipe = this.repo.create(createRecipeDto);
@@ -108,6 +116,24 @@ export class RecipeService {
   ): Promise<Recipe> {
     const instance = await this.findAndCheckUser(id, user);
     this.repo.merge(instance, updateRecipeDto);
+    return this.repo.save(instance);
+  }
+
+  async updatePicture(
+    id: number,
+    pictureName: string,
+    user: ReqUser,
+  ): Promise<Recipe> {
+    const instance = await this.findAndCheckUser(id, user);
+    if (instance.picture) {
+      const key = instance.picture.replace(
+        this.configService.storage.publicDomain + '/',
+        '',
+      );
+      await this.storageService.removeFile(key);
+    }
+    const picture = `${this.configService.storage.publicDomain}/${pictureName}`;
+    this.repo.merge(instance, { picture });
     return this.repo.save(instance);
   }
 

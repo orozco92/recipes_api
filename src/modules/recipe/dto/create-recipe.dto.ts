@@ -10,6 +10,8 @@ export class CreateRecipeDto extends OmitType(Recipe, [
   'steps',
   'author',
   'rating',
+  'picture',
+  'favoriteOf',
   'createdAt',
   'updatedAt',
 ]) {

@@ -2,6 +2,8 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 import { RecipeDifficulty } from '../../core/enums';
 import { MealType } from '../../core/enums/meal-type.enum';
 import { CreateRecipeDto } from '../../modules/recipe/dto/create-recipe.dto';
+import { CreateIngredientDto } from '../../modules/recipe/dto/create-ingredient-dto';
+import { CreateStepDto } from '../../modules/recipe/dto/create-step-dto';
 
 type CreateRecipeType = Partial<CreateRecipeDto> & {
   createdAt: Date;
@@ -17,7 +19,10 @@ export class Recipes1724077239466 implements MigrationInterface {
     );
     const user = userQueryResult.records[0];
 
-    const recipes: CreateRecipeType[] = [
+    const recipes: (CreateRecipeType & {
+      ingredients: CreateIngredientDto[];
+      steps: CreateStepDto[];
+    })[] = [
       {
         name: 'Pan Fried Tilapia',
         servings: 3,
@@ -80,7 +85,7 @@ export class Recipes1724077239466 implements MigrationInterface {
           },
         ],
         authorId: user.id,
-        picture: 'http://localhost:3000/images/Pan-Fried-Tilapia.jpg',
+        // picture: 'http://localhost:3000/images/Pan-Fried-Tilapia.jpg',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -141,7 +146,7 @@ export class Recipes1724077239466 implements MigrationInterface {
           },
         ],
         authorId: user.id,
-        picture: 'http://localhost:3000/images/Tortilla-francesa.webp',
+        // picture: 'http://localhost:3000/images/Tortilla-francesa.webp',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -157,7 +162,7 @@ export class Recipes1724077239466 implements MigrationInterface {
      '${item.difficulty}', 
      ${!!item.mealType ? "'" + item.mealType + "'" : null}, 
      ${item.authorId}, 
-     '${item.picture}', 
+     '', 
      '${item.createdAt.toISOString()}', 
      '${item.updatedAt.toISOString()}'
     )\n`,
