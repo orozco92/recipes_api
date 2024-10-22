@@ -12,7 +12,7 @@ import { Ingredient } from './ingredient.entity';
 import { Step } from './step.entity';
 import { User } from './user.entity';
 import { Auditable } from './auditable.entity';
-import { IsNumber, IsObject, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
 import { RecipeDifficulty } from '../enums';
 import { MealType } from '../enums/meal-type.enum';
 
@@ -25,6 +25,7 @@ export class Recipe extends Auditable {
   id: number;
 
   @IsString()
+  @IsNotEmpty()
   @Column({ name: 'name', type: 'varchar', length: 255 })
   name: string;
 

@@ -100,6 +100,11 @@ export class RecipeService {
 
   findOne(id: number): Promise<Recipe> {
     return this.repo.findOne({
+      select: {
+        ingredients: { id: true, name: true, amount: true, unit: true },
+        steps: { id: true, number: true, description: true },
+        author: { id: true, firstName: true, lastName: true, username: true },
+      },
       where: { id },
       relations: {
         author: true,
