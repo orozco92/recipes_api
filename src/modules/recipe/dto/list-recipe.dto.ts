@@ -5,4 +5,5 @@ export class ListRecipeDto extends OmitType(Recipe, [
   'author',
   'ingredients',
   'steps',
+  'favoriteOf',
 ]) {}
