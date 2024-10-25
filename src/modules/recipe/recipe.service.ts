@@ -38,7 +38,7 @@ export class RecipeService {
     return this.repo.save(recipe);
   }
 
-  getFindAllQuery(options: ListRecipeRequest): FindManyOptions<Recipe> {
+  private getFindAllQuery(options: ListRecipeRequest): FindManyOptions<Recipe> {
     const { page, pageSize, difficulty, mealType, search } = options;
     const query: FindManyOptions<Recipe> = {
       skip: (page - 1) * pageSize,
@@ -56,11 +56,11 @@ export class RecipeService {
     return query;
   }
 
-  async findAll(
-    options: ListRecipeRequest,
-  ): Promise<ListResponseDto<ListRecipeDto>> {
-    const query = this.getFindAllQuery(options);
-    const { page, pageSize } = options;
+  private async listRecipes(
+    query: FindManyOptions<Recipe>,
+    page: number,
+    pageSize: number,
+  ) {
     const data = await this.repo.find(query);
     const total = await this.repo.count(query);
     const totalPages = Math.ceil(total / pageSize);
@@ -74,28 +74,31 @@ export class RecipeService {
     };
   }
 
+  async findAll(
+    options: ListRecipeRequest,
+  ): Promise<ListResponseDto<ListRecipeDto>> {
+    const query = this.getFindAllQuery(options);
+    return this.listRecipes(query, options.page, options.pageSize);
+  }
+
+  async findMyRecipes(
+    options: ListRecipeRequest,
+    userId: number,
+  ): Promise<ListResponseDto<ListRecipeDto>> {
+    const query = this.getFindAllQuery(options);
+    (query.where as FindOptionsWhere<Recipe>).author = { id: userId };
+    return this.listRecipes(query, options.page, options.pageSize);
+  }
+
   async getFavorites(
     options: ListRecipeRequest,
     userId: number,
   ): Promise<ListResponseDto<ListRecipeDto>> {
     const query = this.getFindAllQuery(options);
-    const { page, pageSize } = options;
-
     (query.relations as FindOptionsRelations<Recipe>).favoriteOf = true;
     (query.where as FindOptionsWhere<Recipe>).favoriteOf = { id: userId };
     (query.select as FindOptionsSelect<Recipe>).favoriteOf = {};
-
-    const data = await this.repo.find(query);
-    const total = await this.repo.count(query);
-    const totalPages = Math.ceil(total / pageSize);
-
-    return {
-      data,
-      total,
-      pageSize,
-      page,
-      totalPages,
-    };
+    return this.listRecipes(query, options.page, options.pageSize);
   }
 
   findOne(id: number): Promise<Recipe> {

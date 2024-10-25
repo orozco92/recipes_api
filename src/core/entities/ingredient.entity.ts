@@ -29,7 +29,9 @@ export class Ingredient extends Auditable {
   @Column({ name: 'unit', type: 'varchar', length: 255, nullable: true })
   unit?: string;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients)
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'recipe_id' })
   recipe: Recipe;
 }
