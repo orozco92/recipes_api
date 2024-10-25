@@ -29,6 +29,7 @@ import { ThrottleConfig } from '../../config/throttle.config';
 import { ListRecipeRequest } from './dto/list-recipe-request';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUpload } from '../../core/models/file-upload';
+import { FilteredPagedAndSortedRequest } from '../../core/models/list-request';
 
 @Controller('recipes')
 @ApiTags('recipes')
@@ -39,6 +40,17 @@ export class RecipeController {
   @ApiListResponse(ListRecipeDto)
   findAll(@Query() query: ListRecipeRequest) {
     return this.recipeService.findAll(query);
+  }
+
+  @Get('/me')
+  @ApiListResponse(ListRecipeDto)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  findMyRecipes(
+    @Query() query: FilteredPagedAndSortedRequest,
+    @GetUser() user: ReqUser,
+  ) {
+    return this.recipeService.findMyRecipes(query, user.id);
   }
 
   @Get('/favorites')
