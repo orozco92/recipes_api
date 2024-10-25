@@ -25,7 +25,7 @@ export class Step extends Auditable {
   @Column({ name: 'description', type: 'text' })
   description: string;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.steps)
+  @ManyToOne(() => Recipe, (recipe) => recipe.steps, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'recipe_id' })
   recipe: Recipe;
 }
